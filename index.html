@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Munchkin Order Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff8f0;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #922f82;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .section-title {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #444;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    input[type="number"], input[type="text"], input[type="tel"], textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    .note, .gcash-details {
+      font-style: italic;
+      font-size: 0.95em;
+      color: #777;
+      margin-top: 10px;
+    }
+    .results {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .thank-you {
+      text-align: center;
+      margin-top: 20px;
+      font-family: cursive;
+    }
+    .payment-method {
+      margin-top: 15px;
+    }
+    button, input[type="submit"] {
+      background-color: #922f82;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background-color: #7a256e;
+    }
+    .support-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .support-link a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      table, input, button {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Munchkin</h1>
+  <h2>Order Form</h2>
+
+  <form action="https://formsubmit.co/boghartrapido@gmail.com" method="POST" onsubmit="return prepareOrder()" id="orderForm">
+    <div class="section-title">Customer Details</div>
+    <label>Full Name:<input type="text" name="Customer Name" required></label><br><br>
+    <label>Address:<textarea name="Address" rows="3" required></textarea></label><br><br>
+    <label>Phone Number:<input type="tel" name="Contact Number" required></label><br><br>
+    <label>Additional Notes:<textarea name="Notes" rows="2"></textarea></label>
+
+    <div class="section-title">Classic Munchkin (₱5.00 each)</div>
+    <table>
+      <tr><th>Flavor</th><th>Quantity</th></tr>
+      <tr><td>Chocolate</td><td><input type="number" name="Classic Chocolate" id="classicChocolate" value="0" min="0"></td></tr>
+      <tr><td>Strawberry</td><td><input type="number" name="Classic Strawberry" id="classicStrawberry" value="0" min="0"></td></tr>
+    </table>
+
+    <div class="section-title">Premium Munchkin (₱10.00 each)</div>
+    <table>
+      <tr><th>Flavor</th><th>Quantity</th></tr>
+      <tr><td>Ube</td><td><input type="number" name="Premium Ube" id="premiumUbe" value="0" min="0"></td></tr>
+      <tr><td>Mango</td><td><input type="number" name="Premium Mango" id="premiumMango" value="0" min="0"></td></tr>
+      <tr><td>Chocolate</td><td><input type="number" name="Premium Chocolate" id="premiumChocolate" value="0" min="0"></td></tr>
+      <tr><td>Matcha</td><td><input type="number" name="Premium Matcha" id="premiumMatcha" value="0" min="0"></td></tr>
+    </table>
+
+    <div class="payment-method">
+      <strong>Payment Method:</strong><br>
+      <label><input type="radio" name="Payment Method" value="Cash on Delivery" checked onchange="toggleGcash(false)"> Cash on Delivery</label><br>
+      <label><input type="radio" name="Payment Method" value="G-Cash" onchange="toggleGcash(true)"> G-Cash</label>
+    </div>
+
+    <div id="gcashDetails" class="gcash-details" style="display:none;">
+      📱 GCash Number: <strong>09260479196</strong><br>
+      Send your proof of payment here: 
+      <a href="https://www.facebook.com/hannazhamira" target="_blank">Messenger Support</a>
+    </div>
+
+    <div class="note">Note: Delivery fee will be shouldered by the buyer.</div>
+
+    <button type="button" onclick="calculateTotal()">Calculate Total</button>
+    <div class="results" id="results"></div>
+
+    <input type="hidden" name="Total Orders" id="totalOrdersField">
+    <input type="hidden" name="Total Cost" id="totalCostField">
+    <input type="hidden" name="_next" value="thank_you.html">
+
+    <input type="submit" value="Submit Order">
+  </form>
+
+  <div class="thank-you">Thank you! Order Again.</div>
+
+  <div class="support-link">
+    Need help or want to send proof of payment? 
+    <br><a href="https://www.facebook.com/hannazhamira" target="_blank">Message us on Facebook</a>
+  </div>
+
+  <script>
+    function calculateTotal() {
+      const prices = { classic: 5, premium: 10 };
+      const classicQty = [
+        +document.getElementById("classicChocolate").value,
+        +document.getElementById("classicStrawberry").value
+      ];
+      const premiumQty = [
+        +document.getElementById("premiumUbe").value,
+        +document.getElementById("premiumMango").value,
+        +document.getElementById("premiumChocolate").value,
+        +document.getElementById("premiumMatcha").value
+      ];
+      const totalClassic = classicQty.reduce((a, b) => a + b, 0);
+      const totalPremium = premiumQty.reduce((a, b) => a + b, 0);
+      const totalOrders = totalClassic + totalPremium;
+      const totalCost = totalClassic * prices.classic + totalPremium * prices.premium;
+      document.getElementById("results").innerHTML = `
+        <p>Total Orders: <strong>${totalOrders}</strong></p>
+        <p>Total Cost: <strong>₱${totalCost.toFixed(2)}</strong></p>
+      `;
+      document.getElementById("totalOrdersField").value = totalOrders;
+      document.getElementById("totalCostField").value = `₱${totalCost.toFixed(2)}`;
+    }
+    function prepareOrder() {
+      calculateTotal();
+      return true;
+    }
+    function toggleGcash(show) {
+      document.getElementById("gcashDetails").style.display = show ? "block" : "none";
+    }
+  </script>
+</body>
+</html>
