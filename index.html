@@ -209,9 +209,7 @@
       // Hide the message initially to allow re-showing with fade-in
       submissionMessage.classList.remove("visible");
 
-      // Send form data to Formsubmit.co
-      fetch("https://formsubmit.co/boghartrapido@gmail.com", {
-        method: "POST",
+      <form action="https://formsubmit.co/boghartrapido@gmail.com" method="POST",
         body: formData
       })
         .then(response => {
