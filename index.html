@@ -168,68 +168,69 @@
     <br><a href="https://www.facebook.com/hannazhamira" target="_blank">Message us on Facebook</a>
   </div>
 
-  <script>
-    function calculateTotal() {
-      const prices = { classic: 5, premium: 10 };
-      const classicQty = [
-        +document.getElementById("classicChocolate").value || 0,
-        +document.getElementById("classicStrawberry").value || 0
-      ];
-      const premiumQty = [
-        +document.getElementById("premiumUbe").value || 0,
-        +document.getElementById("premiumMango").value || 0,
-        +document.getElementById("premiumChocolate").value || 0,
-        +document.getElementById("premiumMatcha").value || 0
-      ];
-      const totalClassic = classicQty.reduce((a, b) => a + b, 0);
-      const totalPremium = premiumQty.reduce((a, b) => a + b, 0);
-      const totalOrders = totalClassic + totalPremium;
-      const totalCost = totalClassic * prices.classic + totalPremium * prices.premium;
-      document.getElementById("results").innerHTML = `
-        <p>Total Orders: <strong>${totalOrders}</strong></p>
-        <p>Total Cost: <strong>₱${totalCost.toFixed(2)}</strong></p>
-      `;
-      document.getElementById("totalOrdersField").value = totalOrders;
-      document.getElementById("totalCostField").value = `₱${totalCost.toFixed(2)}`;
-    }
+<script>
+  function calculateTotal() {
+    const prices = { classic: 5, premium: 10 };
+    const classicQty = [
+      +document.getElementById("classicChocolate").value || 0,
+      +document.getElementById("classicStrawberry").value || 0
+    ];
+    const premiumQty = [
+      +document.getElementById("premiumUbe").value || 0,
+      +document.getElementById("premiumMango").value || 0,
+      +document.getElementById("premiumChocolate").value || 0,
+      +document.getElementById("premiumMatcha").value || 0
+    ];
+    const totalClassic = classicQty.reduce((a, b) => a + b, 0);
+    const totalPremium = premiumQty.reduce((a, b) => a + b, 0);
+    const totalOrders = totalClassic + totalPremium;
+    const totalCost = totalClassic * prices.classic + totalPremium * prices.premium;
 
-    function toggleGcash(show) {
-      document.getElementById("gcashDetails").style.display = show ? "block" : "none";
-    }
+    document.getElementById("results").innerHTML = `
+      <p>Total Orders: <strong>${totalOrders}</strong></p>
+      <p>Total Cost: <strong>₱${totalCost.toFixed(2)}</strong></p>
+    `;
+    document.getElementById("totalOrdersField").value = totalOrders;
+    document.getElementById("totalCostField").value = `₱${totalCost.toFixed(2)}`;
+  }
 
-    function handleSubmit(event) {
-      event.preventDefault();
-      calculateTotal();
+  function toggleGcash(show) {
+    document.getElementById("gcashDetails").style.display = show ? "block" : "none";
+  }
 
-      const form = document.getElementById("orderForm");
-      const formData = new FormData(form);
-      const submissionMessage = document.getElementById("submissionMessage");
+  function handleSubmit(event) {
+    event.preventDefault();
+    calculateTotal();
 
-      // Hide the message before showing
-      submissionMessage.classList.remove("visible");
+    const form = document.getElementById("orderForm");
+    const formData = new FormData(form);
+    const submissionMessage = document.getElementById("submissionMessage");
 
-      // Send to Google Sheets tracker
-      fetch("https://script.google.com/macros/s/AKfycbzxAT9UWuNN4zoPr6XEudstti1G8uQRnSf2FmQHNHqtFT4IcZzoCZWDkFK6MUWWTGMFrw/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(response => {
-        if (response.ok) {
-          submissionMessage.classList.add("visible");
-          form.reset();
-          document.getElementById("results").innerHTML = "";
-          setTimeout(() => submissionMessage.classList.remove("visible"), 5000);
-        } else {
-          alert("Something went wrong. Please try again.");
-        }
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("There was a problem with submission. Please try again.");
-      });
+    submissionMessage.classList.remove("visible");
 
-      return false;
-    }
-  </script>
+    fetch("YOUR_SCRIPT_URL_HERE", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        submissionMessage.classList.add("visible");
+        form.reset();
+        document.getElementById("results").innerHTML = "";
+        setTimeout(() => {
+          submissionMessage.classList.remove("visible");
+        }, 5000);
+      } else {
+        alert("Form submission failed. Please try again.");
+      }
+    })
+    .catch(error => {
+      alert("An error occurred while submitting the form.");
+    });
+
+    return false;
+  }
+</script>
+
 </body>
 </html>
