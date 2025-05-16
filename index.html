@@ -55,13 +55,10 @@
       font-weight: bold;
       margin-top: 10px;
     }
-    .submission-message {
+    .thank-you {
       text-align: center;
       margin-top: 20px;
-      font-size: 1.2em;
-      color: #922f82;
-      font-weight: bold;
-      display: none;
+      font-family: cursive;
     }
     .payment-method {
       margin-top: 15px;
@@ -86,6 +83,24 @@
       color: #007bff;
       text-decoration: none;
       font-weight: bold;
+    }
+    .submission-message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #922f82;
+      font-weight: bold;
+      background-color: #f0e4f8; /* Light purple background */
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #922f82;
+      display: none; /* Hidden by default */
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out; /* Fade-in effect */
+    }
+    .submission-message.visible {
+      display: block;
+      opacity: 1;
     }
     @media (max-width: 600px) {
       table, input, button {
@@ -144,11 +159,14 @@
     <input type="submit" value="Submit Order">
   </form>
 
-  <div class="submission-message" id="submissionMessage">✅ Order Submitted Successfully!</div>
+  <!-- Updated submission message text -->
+  <div class="submission-message" id="submissionMessage">Order Submitted Successfully</div>
+
+  <div class="thank-you">Thank you! Order Again.</div>
 
   <div class="support-link">
-    Need help or want to send proof of payment?<br>
-    <a href="https://www.facebook.com/hannazhamira" target="_blank">Message us on Facebook</a>
+    Need help or want to send proof of payment? 
+    <br><a href="https://www.facebook.com/hannazhamira" target="_blank">Message us on Facebook</a>
   </div>
 
   <script>
@@ -181,33 +199,45 @@
     }
 
     function handleSubmit(event) {
-      event.preventDefault();
-      calculateTotal();
+      event.preventDefault(); // Prevent default form submission
+      calculateTotal(); // Update total fields before submission
 
       const form = document.getElementById("orderForm");
       const formData = new FormData(form);
       const submissionMessage = document.getElementById("submissionMessage");
 
+      // Hide the message initially to allow re-showing with fade-in
+      submissionMessage.classList.remove("visible");
+
+      // Send form data to Formsubmit.co
       fetch("https://formsubmit.co/boghartrapido@gmail.com", {
         method: "POST",
         body: formData
       })
-      .then(response => {
-        if (response.ok) {
-          submissionMessage.style.display = "block";
-          form.reset();
-          document.getElementById("results").innerHTML = "";
-          setTimeout(() => {
-            submissionMessage.style.display = "none";
-          }, 5000); // Hide after 5 seconds
-        } else {
-          alert("Submission failed. Please try again.");
-        }
-      })
-      .catch(error => {
-        alert("An error occurred. Please try again.");
-        console.error(error);
-      });
+        .then(response => {
+          if (response.ok) {
+            console.log("Form submission successful");
+            // Show the "Order Submitted Successfully" message
+            submissionMessage.classList.add("visible");
+            // Reset the form
+            form.reset();
+            document.getElementById("results").innerHTML = ""; // Clear the total results
+
+            // Optionally hide the message after 5 seconds
+            setTimeout(() => {
+              submissionMessage.classList.remove("visible");
+            }, 5000);
+          } else {
+            console.error("Form submission failed with status:", response.status);
+            alert("Form submission failed. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Submission error:", error);
+          alert("An error occurred while submitting the form. Please try again.");
+        });
+
+      return false; // Prevent default form submission
     }
   </script>
 </body>
