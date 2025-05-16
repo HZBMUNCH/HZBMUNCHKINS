@@ -84,6 +84,14 @@
       text-decoration: none;
       font-weight: bold;
     }
+    .submission-message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #922f82;
+      font-weight: bold;
+      display: none; /* Hidden by default */
+    }
     @media (max-width: 600px) {
       table, input, button {
         font-size: 0.9em;
@@ -95,7 +103,6 @@
   <h1>Munchkin</h1>
   <h2>Order Form</h2>
 
-  <!-- Remove the action attribute and handle submission via JavaScript -->
   <form onsubmit="return handleSubmit(event)" id="orderForm">
     <div class="section-title">Customer Details</div>
     <label>Full Name:<input type="text" name="Customer Name" required></label><br><br>
@@ -119,7 +126,7 @@
       <tr><td>Matcha</td><td><input type="number" name="Premium Matcha" id="premiumMatcha" value="0" min="0"></td></tr>
     </table>
 
-    <div class="payment-method">
+    < heartbreakdiv class="payment-method">
       <strong>Payment Method:</strong><br>
       <label><input type="radio" name="Payment Method" value="Cash on Delivery" checked onchange="toggleGcash(false)"> Cash on Delivery</label><br>
       <label><input type="radio" name="Payment Method" value="G-Cash" onchange="toggleGcash(true)"> G-Cash</label>
@@ -141,6 +148,9 @@
 
     <input type="submit" value="Submit Order">
   </form>
+
+  <!-- Add a div to display the submission message -->
+  <div class="submission-message" id="submissionMessage">Order Submitted</div>
 
   <div class="thank-you">Thank you! Order Again.</div>
 
@@ -184,6 +194,7 @@
 
       const form = document.getElementById("orderForm");
       const formData = new FormData(form);
+      const submissionMessage = document.getElementById("submissionMessage");
 
       // Send form data to Formsubmit.co
       fetch("https://formsubmit.co/boghartrapido@gmail.com", {
@@ -192,9 +203,12 @@
       })
         .then(response => {
           if (response.ok) {
-            console.log("Form submission successful, redirecting...");
-            // Redirect to thank_you.html after successful submission
-            window.location.href = "https://hzbmunch.github.io/HZBMUNCHKINS/thank_you.html";
+            console.log("Form submission successful");
+            // Show the "Order Submitted" message
+            submissionMessage.style.display = "block";
+            // Optionally, reset the form
+            form.reset();
+            document.getElementById("results").innerHTML = ""; // Clear the total results
           } else {
             console.error("Form submission failed with status:", response.status);
             alert("Form submission failed. Please try again.");
