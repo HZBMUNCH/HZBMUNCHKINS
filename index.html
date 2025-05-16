@@ -137,8 +137,8 @@
 
     <input type="hidden" name="Total Orders" id="totalOrdersField">
     <input type="hidden" name="Total Cost" id="totalCostField">
-    <input type="hidden" name="_next" value="https://hzbmunch.github.io/HZBMUNCHKINS/thank_you.html">
-
+    <!-- Use relative URL for simplicity, assuming thank_you.html is in the same directory -->
+    <input type="hidden" name="_next" value="thank_you.html">
 
     <input type="submit" value="Submit Order">
   </form>
@@ -154,14 +154,14 @@
     function calculateTotal() {
       const prices = { classic: 5, premium: 10 };
       const classicQty = [
-        +document.getElementById("classicChocolate").value,
-        +document.getElementById("classicStrawberry").value
+        +document.getElementById("classicChocolate").value || 0,
+        +document.getElementById("classicStrawberry").value || 0
       ];
       const premiumQty = [
-        +document.getElementById("premiumUbe").value,
-        +document.getElementById("premiumMango").value,
-        +document.getElementById("premiumChocolate").value,
-        +document.getElementById("premiumMatcha").value
+        +document.getElementById("premiumUbe").value || 0,
+        +document.getElementById("premiumMango").value || 0,
+        +document.getElementById("premiumChocolate").value || 0,
+        +document.getElementById("premiumMatcha").value || 0
       ];
       const totalClassic = classicQty.reduce((a, b) => a + b, 0);
       const totalPremium = premiumQty.reduce((a, b) => a + b, 0);
@@ -174,10 +174,18 @@
       document.getElementById("totalOrdersField").value = totalOrders;
       document.getElementById("totalCostField").value = `₱${totalCost.toFixed(2)}`;
     }
+
     function prepareOrder() {
-      calculateTotal();
-      return true;
+      try {
+        calculateTotal();
+        return true;
+      } catch (error) {
+        console.error("Error preparing order:", error);
+        alert("An error occurred while preparing your order. Please try again.");
+        return false;
+      }
     }
+
     function toggleGcash(show) {
       document.getElementById("gcashDetails").style.display = show ? "block" : "none";
     }
